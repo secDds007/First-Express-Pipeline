@@ -1,11 +1,37 @@
 Jenkinsfile (Declarative Pipeline)
 /* Requires the Docker Pipeline plugin */
 pipeline {
-    agent { docker { image 'node:20.10.0-alpine3.19' } }
+    agent { 
+        node {
+            label 'docker-agent-alpine'
+            }
+      }
+    triggers {
+        pollSCM '* * * * *'
+    }
     stages {
-        stage('build') {
+        stage('Build') {
             steps {
-                sh 'node --version'
+                echo "Building.."
+                sh '''
+                npm install
+                '''
+            }
+        }
+        stage('Test') {
+            steps {
+                echo "Testing.."
+                sh '''
+                npm start server.js
+                '''
+            }
+        }
+        stage('Deliver') {
+            steps {
+                echo 'Deliver....'
+                sh '''
+                echo "doing delivery stuff.."
+                '''
             }
         }
     }
