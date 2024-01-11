@@ -9,6 +9,9 @@ pipeline {
         nodejs 'node' // 'node' is the tool name defined in Jenkins Global Tool Configuration
     }
 
+    triggers {
+        pollSCM '* * * * *'
+    }
     stages {
         stage('Checkout') {
             steps {
@@ -29,16 +32,12 @@ pipeline {
                 }
             }
         }
-
-    triggers {
-        pollSCM '* * * * *'
-    }
-    stages {
         stage('Build') {
             steps {
                 echo "Building.."
                 sh '''
                 npm install
+                npm start
                 '''
             }
         }
@@ -46,7 +45,7 @@ pipeline {
             steps {
                 echo "Testing.."
                 sh '''
-                npm start server.js
+                npm test
                 '''
             }
         }
@@ -59,5 +58,4 @@ pipeline {
             }
         }
     }
-}
 }
